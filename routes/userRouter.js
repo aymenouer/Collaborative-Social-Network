@@ -23,7 +23,8 @@ router.get('/logout',userCtrl.logout )
 
 router.put('/update',auth,userCtrl.updateUser )
 
-router.put('/update_role/:id',auth,authAdmin,userCtrl.updateUser )
+router.put('/update_role/:id',auth,authAdmin,userCtrl.updateUsersRole )
 
+router.put('/delete/:id',auth,authAdmin,userCtrl.deleteUser )
 
 module.exports = router
