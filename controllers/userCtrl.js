@@ -112,7 +112,7 @@ jwt.verify(rf_token,process.env.REFRESH_TOKEN_SECRET , (err,user) => {
             if(!user)return res.status(400).json({msg: "This mail does not exist!"})
        
             const access_token = createAccessToken({id: user._id})
-            const url = `${CLIENT_URL}/user/rest/${access_token}`
+            const url = `${CLIENT_URL}/user/reset/${access_token}`
             sendMail(email,url,"Rest Your password")
             res.json({msg: "Re-send Une password, please check your email."})
         } catch (err) {
