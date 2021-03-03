@@ -17,11 +17,14 @@ const initialState = {
 function Profile() {
     const auth = useSelector(state => state.auth)
     const token = useSelector(state => state.token)
+    const users = useSelector(state => state.users)
+   
+
     const {user,isAdmin} = auth
     const [data,setData] = useState(initialState)
     const [avatar,setAvatar] = useState(false)
     const [loading,setLoading] = useState(false)
-    const [callback,useCallback] = useState(false)
+    const [callback,setCallback] = useState(false)
     const {name,password,cf_password,err,success} = data
 
 
@@ -29,7 +32,7 @@ function Profile() {
 
     useEffect(()=> {
         if(isAdmin){
-            return fetchAllUsers(token).then(res => {
+             fetchAllUsers(token).then(res => {
                 dispatch(dispatchGetAllUsers(res))
             })
         }
@@ -100,6 +103,21 @@ try {
         if (password) updatePassword()
 
     }
+    const handleDelete = async (id) => {
+try {
+    if(window.confirm("Are you sure you want to delete this account ?"))
+    {
+        setLoading(true)
+        await axios.delete(`/user/delete/${id}`,{
+            headers: {Authorization: token}
+        })
+        setLoading(false)
+        setCallback(!callback)
+    }
+} catch (err) {
+    setData({...data, err:err.response.data.msg ,success:''})   
+}
+    }
     return (
         <>
         <div>
@@ -167,21 +185,35 @@ try {
                         </tr>
                     </thead>
                     <tbody>
-                    <td>
-                                ID
+                        {
+                            users.map(user => (
+
+                                <tr key={user._id}>
+ <td>
+ {user._id}
                             </td>
                             <td>
-                                Name
+                            {user.name}
                             </td>
                             <td>
-                                Email
+                            {user.email}
                             </td>
                             <td>
-                                Admin
+                            {user.role === 1? "Admin" : "user"}
                             </td>
                             <td>
-                                Action
+                                <Link to={`/edit_user/${user._id}`}>
+                                    edit
+                                </Link>
+                                <i onClick={()=>handleDelete(user._id)} title="remove">
+remove
+                                </i>
                             </td>
+                                </tr>
+
+                            ))
+                        }
+                           
                     </tbody>
 
                 </table>
