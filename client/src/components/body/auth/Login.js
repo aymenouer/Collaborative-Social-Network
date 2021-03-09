@@ -4,6 +4,7 @@ import axios from 'axios'
 import {showErrmsg,showSuccessmsg} from '../../utils/notification/Notification'
 import {dispatchLogin} from '../../../redux/actions/AuthAction'
 import {useDispatch} from 'react-redux'
+import { GoogleLogin } from 'react-google-login';
 const initialState = {
     email: '',
     password: '',
@@ -39,6 +40,19 @@ setUser({...user, [name]:value , err:'', success:''})
             err.response.data.msg && setUser({...user , err:err.response.data.msg, success:''})
         }
     }
+     const responseGoogle = async (response) => {
+try {
+    const res = await axios.post('/user/google_login',{tokenId: response.tokenId})
+    setUser({...user , err:'', success:res.data.msg})
+    localStorage.setItem('firstLogin',true)
+
+    dispatch(dispatchLogin())
+
+    history.push("/")
+} catch (err) {
+    err.response.data.msg && setUser({...user , err:err.response.data.msg, success:''})
+}
+     }
     return (
         <div className="login_page">
             <h2>Login</h2>
@@ -58,6 +72,15 @@ setUser({...user, [name]:value , err:'', success:''})
        <Link to="/forget_password"> Forget Your Password ?</Link>
           </div>
 </form>
+<div className="hr" >Or Login with </div>
+<div className="social"  >
+<GoogleLogin
+    clientId="18474833002-2g2pqti2c8el8hesjjo369qjv4121hb4.apps.googleusercontent.com"
+    buttonText="Login with Google"
+    onSuccess={responseGoogle}
+    cookiePolicy={'single_host_origin'}
+  />
+</div>
 <p>New CLient ? <Link to="/register">Register</Link></p> 
         </div>
     )

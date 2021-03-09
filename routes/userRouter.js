@@ -27,4 +27,10 @@ router.put('/update_role/:id',auth,authAdmin,userCtrl.updateUsersRole )
 
 router.put('/delete/:id',auth,authAdmin,userCtrl.deleteUser )
 
+
+// Social login
+
+router.post('/google_login',userCtrl.google_login )
+
+
 module.exports = router
